@@ -14,15 +14,11 @@ fn main() {
 }
 
 fn operate(operator: char, a: f32, b:f32) -> f32 {
-    if operator == '+' {
-        a + b
-    } else if operator == '-' {
-        a - b
-    } else if operator == '*' {
-        a*b
-    } else if operator == '/' {
-        a/b
-    } else {
-        0.0
+    match operator {
+        '+' => a + b,
+        '-' => a - b,
+        '*' | 'x' | 'X' => a * b,
+        '/' => a / b,
+        _   => panic!("Invalid operator used")
     }
 }
