@@ -2,10 +2,30 @@ mod args;
 use args::Args;
 use std::{fs::File, io::BufReader};
 use image::{io::Reader, ImageFormat, DynamicImage, imageops::FilterType::Triangle, GenericImageView};
-
+use std::convert::TryInto;
 #[derive(Debug)]
 enum ImageDataErr {
     DiffFormats
+}
+
+struct FloatingImage {
+    width: u32,
+    height: u32,
+    data: Vec<u8>,
+    name: String,
+}
+
+impl FloatingImage {
+    fn new(width: u32, height: u32, name: String) -> Self {
+        let buffer_capacity = width * height * 4;
+        let buffer = Vec::with_capacity(buffer_capacity.try_into().unwrap());
+        FloatingImage {
+            width,
+            height,
+            data: buffer,
+            name
+        }
+    }
 }
 
 fn main() -> Result<(), ImageDataErr> {
@@ -17,6 +37,7 @@ fn main() -> Result<(), ImageDataErr> {
         return Err(ImageDataErr::DiffFormats);
     }
     let (img_1, img_2) = standardize_size(img_1, img_2);
+    let output = FloatingImage::new(img_1.width(), img_1.height(), args.output);
     Ok(())
     // println!("Hello, world! {:?}", args);
 }
